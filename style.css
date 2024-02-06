@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
+
+/* font for body of all pages*/
+body {
+    font-family: 'Josefin Sans', sans-serif;
+    padding: 0;
+    margin: 0;
+    background-color: #85d2d3;
+    overflow-x: hidden;
+}
+
+/*navigation container containing navbar and category bar*/
+.navigationContainer {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/*navigation bar*/
+.navbar {
+    left: 0;
+    top: 0;
+    position: sticky;
+    /*navigation stays on top while scrolling*/
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #85d2d3;
+    z-index: 1;
+    /* background-color: #85d2d3cf; */
+    /* Semi-transparent background */
+    transition: background-color 0.3s ease;
+    /* Smooth color transition on hover */
+}
+
+/*css for <a> tags in navigation bar*/
+.navbar li a {
+    float: left;
+    font-size: 17px;
+    /* display: flex; */
+    color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 24.5px;
+    text-decoration: none;
+    max-width: fit-content;
+    padding-inline: 20px;
+    transition: transform .5s;
+    /* Animation */
+    border-radius: 5px;
+    /* Add border-radius for a softer look */
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+
+/* Styles for the search bar */
+.searchbar {
+    font-size: 16px;
+    width: 88px;
+    /* Adjust as needed */
+    padding: 5px;
+    padding-inline: 10px;
+    border: none;
+    border-radius: 15px;
+    outline: none;
+    transition: width 0.5s;
+}
+
+
+/* css for searchbar input */
+input.searchbar {
+    color: #000000;
+}
+
+/* searchbar placeholder */
+.searchbar::placeholder {
+    color: #7a7a7a;
+    /* Adjust as needed */
+}
+
+.searchbar:focus {
+    width: 300px;
+    /* Adjust as needed */
+    transition: width 0.5s;
+}
+
+/* aligning searchbar in navbar */
+/* .navbar li:nth-child(2) {
+    padding-left: 0px;
+} */
+
+.categoryNavbar li:nth-child(1),
+.categoryNavbar li:nth-child(2),
+.categoryNavbar li:nth-child(3),
+.categoryNavbar li:nth-child(4),
+.categoryNavbar li:nth-child(5) {
+    display: inline-block;
+    margin-right: 10px;
+    /* Add spacing between links */
+}
+
+/* css for logo container*/
+.navbar li:first-child a {
+    padding: 0;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 10px;
+}
+
+/* css for cart */
+.navbar li:nth-child(3) a {
+    padding: 5px;
+    padding-inline: 20px;
+    font-size: 30px;
+}
+
+/* css for profile */
+.navbar li:nth-child(4) a {
+    padding: 13px;
+    padding-inline: 20px;
+    font-size: 30px;
+}
+
+/* css for logo */
+.navbar li a img {
+    width: 110px;
+    height: 55px;
+}
+
+/*selected class highlights the <a> tag of the current page*/
+.selected {
+    color: white;
+    /* background-color:#798155; */
+}
+
+/* Change the link color to black on hover */
+.navbar li a:hover {
+    color: #ffffff;
+    background-color: #69a7a8;
+    /* transform: scale(1.1); */
+    /* 110% zoom */
+    box-shadow: 0 1px 8px 0 black;
+    /*black shadow on hover*/
+}
+
+/*category bar*/
+.categoryNavbar {
+    position: sticky;
+    list-style-type: none;
+    padding: 5;
+    margin: auto;
+    overflow: hidden;
+    background-color: #6fb1b2;
+    /* z-index: 1; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+/* css for <a> tags in category bar  */
+.categoryNavbar li a {
+    font-size: 17px;
+    display: block;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 0px;
+    text-decoration: none;
+    padding-inline: 15px;
+    transition: transform 0.8s;
+}
+
+
+/* Change the link color to black on hover */
+.categoryNavbar li a:hover {
+    /* color: #ffffff; */
+    background-color: #69a7a8;
+    transform: scale(1.1);
+    /* 110% zoom */
+    box-shadow: 0 2px 4px 0 black;
+    /*black shadow on hover*/
+}
+
+/* css for advertisement carousel
+.featured_container {
+    margin: auto;
+    margin-top: 40px;
+    text-align: center;
+    width: 70%;
+    height: 500px;
+    border: 7px;
+    border-style: solid;
+    border-radius: 5px;
+    overflow: hidden;
+} */
+
+/* css for images in carousel
+.image-container {
+    width: 3189.9px;
+    background-color: pink;
+    height: 500px;
+    clear: both;
+    position: relative;
+    transition: left 2s;
+} */
+
+/* css for carousel slide
+.slide {
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+} */
+
+/* to shift to span when button clicked
+#slide-1:target~.image-container {
+    left: 0px;
+} */
+
+/* to shift to span when button clicked
+#slide-2:target~.image-container {
+    left: -1063.3px;
+} */
+
+/* to shift to span when button clicked
+#slide-3:target~.image-container {
+    left: -2126.6px;
+} */
+
+/* buttons in advertisement carousel
+.dots {
+    position: relative;
+    top: -35px;
+} */
+
+/* css for a tags in advertisement carousel
+.dots a {
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    border-radius: 50px;
+    background-color: lightgreen;
+} */
+
+/* css for heading of the page
+.heading {
+    font-size: 50px;
+    text-align: center;
+    font-weight: lighter;
+    margin-top: 20px;
+    margin-bottom: 0;
+    color: #ffffff;
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
+} */
+
+/* css for recommendation container
+.recommendationContainer {
+    width: 70%;
+    margin: auto;
+    display: table;
+    margin-bottom: 4%;
+    margin-top: 10px;
+    background-color: rgb(111, 143, 111);
+    box-shadow: 0 1px 5px 0 black;
+} */
+
+/* css to display a product */
+.card {
+    float: left;
+    display: table-cell;
+    margin: 10px;
+    /* Adjust the margin as needed */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    background-color: rgb(204, 202, 202);
+    width: calc(25% - 20px);
+    /* Adjust the width as needed */
+    height: 10%;
+    text-align: center;
+    transition: transform .5s;
+    border-radius: 10%;
+    box-shadow: 0 4px 8px 0 black;
+    color: black;
+    text-decoration: none;
+}
+
+/* css for removing purple line <a> tag */
+.card a {
+    text-decoration: none;
+    color: black;
+}
+
+/* css for displaying card text */
+.card p {
+    margin: 0px;
+}
+
+/* css for displaying card text */
+.card h1 {
+    font-size:large;
+    margin-top: 7px;
+    margin-bottom: 10px;
+}
+
+/* css for displaying card button */
+.card p button {
+    padding: 5px;
+}
+
+/* css for displaying product image */
+.card img {
+    border-top-left-radius: 10%;
+    border-top-right-radius: 10%;
+    box-shadow: 0 1px 10px 0 black;
+}
+
+/* color changes on hover */
+.card:hover {
+    color: #ffffff;
+    background-color: rgb(70, 46, 46);
+    transform: scale(1.05);
+    /* 105% zoom */
+    box-shadow: 0 4px 8px 0 black;
+    /*black shadow on hover*/
+}
+
+
+
+
+/* product */
+.product {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Styling for Checkout Container */
+.checkout-container {
+    max-width: 900px;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    padding: 50px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #e1feff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply consistent styling to form elements */
+.checkout-container p {
+    margin-bottom: 20px;
+}
+
+.checkout-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.checkout-container input,
+.checkout-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #c7e1e1;
+
+}
