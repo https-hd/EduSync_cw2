@@ -238,6 +238,14 @@
     <!-- Vue.js script -->
     <script type="text/javascript">
 
+// import axios from 'axios';
+
+// const axiosInstance = axios.create({
+//   baseURL: 'http://localhost:3000', // Your backend server URL
+// });
+
+// Vue.prototype.$http = axiosInstance;
+
         // Vue instance for the EduSync web application
         let webstore = new Vue({
             el: '#app',
@@ -268,7 +276,7 @@
                 },
 
 
-                products: products,
+                products: get products from Expres,
                 searchQuery: '',
                 cart: [], //array to store items in shopping cart.
                 selectedSortOrder: 'lowToHigh'
@@ -316,6 +324,22 @@
 
                 submitForm() {
                     { alert('Order Submitted! :D') }
+                },
+
+                async fetchProductsFromBackend() {
+                try {
+                    const response = await fetch('http://localhost:3000/collection/yourcollectionname'); // Replace 'yourcollectionname' with your actual collection name
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch products');
+                    }
+                    const products = await response.json();
+                    if (products) {
+                        // Update the products data property with the fetched products
+                        this.products = products;
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
                 },
 
                 validateAndSubmit() {
@@ -438,6 +462,9 @@
 
 
             }
+            created() {
+                this.fetchProductsFromBackend();
+            },
         });
     </script>
 </body>

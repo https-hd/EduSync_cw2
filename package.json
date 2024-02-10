@@ -1,8 +1,8 @@
 {
   "name": "mongo-demo",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "mongodb": "^3.6.6"
-  }
+    "mongodb": "^3.6.6",
+    "mongoose": "^8.1.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/https-hd/EduSync_cw2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/https-hd/EduSync_cw2/issues"
+  },
+  "homepage": "https://github.com/https-hd/EduSync_cw2#readme",
+  "description": ""
 }

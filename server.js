@@ -17,8 +17,13 @@ const MongoClient = require('mongodb').MongoClient;
 let db;
 MongoClient.connect('mongodb+srv://HA1145:Hooda786@cluster0.bswsi9p.mongodb.net', (err, client) => {
     db = client.db('Webstore')
-
 })
+
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 
 app.param('collectionName', (req, res, next, collectionName) => {
     req.collection = db.collection(collectionName)
