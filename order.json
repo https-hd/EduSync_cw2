@@ -1,0 +1,19 @@
+{
+    "_id": "60d5ecb0c371138f8c123456",
+    "customerDetails": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "address": "123 Main Street",
+        "city": "Anytown",
+        "province": "CA",
+        "zip": "12345",
+        "method": "Standard",
+        "gift": false,
+        "sendGift": "Send as a Gift",
+        "dontSendGift": "Don't send as a gift"
+    },
+    "cart": {
+        "lessonID1": "2",
+        "lessonID2": "1"
+    }
+}
