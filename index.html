@@ -55,7 +55,7 @@
 
                 <!-- Search bar and category links -->
                 <li style="padding-left: 1%">
-                    <input v-model="searchQuery" type="search" class="searchbar" id="searchbar"
+                    <input v-model.trim="searchQuery" type="search" class="searchbar" id="searchbar"
                         placeholder="Search Courses & Activites">
                 </li>
                 <li>
@@ -73,12 +73,18 @@
                     <a>
                         <div class="sortContainer">
                             <label for="sortAttribute">Sort by:</label>
-                                <select v-model="sortAttribute" id="sortAttribute">
-                                    <option value="title">Subject</option>
-                                    <option value="location">Location</option>
-                                    <option value="price">Price</option>
-                                    <option value="availableInventory">Spaces</option>
-                                </select>
+                            <select v-model="sortAttribute" id="sortAttribute">
+                                <option value="title">Subject</option>
+                                <option value="location">Location</option>
+                                <option value="price">Price</option>
+                                <option value="availableInventory">Spaces</option>
+                            </select>
+
+                            <label for="sortOrder">Order:</label>
+                            <select v-model="sortOrder" id="sortOrder">
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
                         </div>
                     </a>
                 </li>
@@ -100,10 +106,10 @@
                         </figure>
                         <h2 v-text="product.title"></h2>
                         <p v-html="product.description"></p>
-                        <p>Price: {{product.price}}</p>
+                        <p>Location: {{ product.location }}</p>
+                        <p>Price: {{product.price}} AED</p>
                         <p>
-                            Inventory: {{product.availableInventory -
-                            cartCount(product.id)}}
+                            Inventory: {{product.availableInventory - cartCount(product.id)}}
                         </p>
 
                         <!-- Add to cart and remove from cart buttons -->
@@ -131,8 +137,8 @@
 
                         <!-- Product rating stars -->
                         <div>
-                            <span v-for="n in product.rating">★</span>
-                            <span v-for="n in 5-product.rating">☆</span>
+                            <span v-for="n in product.rating" class="star">★</span>
+                            <span v-for="n in 5 - product.rating" class="star">☆</span>
                         </div>
                     </div>
                 </div>
@@ -244,20 +250,22 @@
 
             // Data properties for storing application state
             data: {
+                // Site name mounting the app
                 sitename: 'EduSync',
                 showProduct: true,
+                // Contains an array of lesson data
+                products: [],
+                // Array to store items in the cart
+                cart: [],
+                // Attribute to sort products by (default: title of Subject)
+                sortAttribute: "title",
+                sortOrder: "asc",
+                // Order information (first name last name, address, email)
                 order: {
                     firstName: '',
                     lastName: '',
                     address: '',
-                    city: '',
-                    province: '',
-                    zip: '',
-                    method: 'Home',
-                    gift: false,
-                    sendGift: "Send as a Gift",
-                    dontSendGift: "Don't send as a gift",
-
+                    email: '',
                 },
 
                 provinces: {
@@ -268,11 +276,29 @@
                 },
 
 
-                products: products,
+                // products: products,
                 searchQuery: '',
-                cart: [], //array to store items in shopping cart.
-                selectedSortOrder: 'lowToHigh'
+                
+                // selectedSortOrder: 'lowToHigh'
             },
+
+            created:
+                //..fetch GET to retrieve all lessons from lessons collection
+                function () {
+                    // set the url to your server and route
+                    fetch('http://localhost:3000/collection/lessons', {
+                        method: 'GET', // set the HTTP method as 'GET'
+                        headers: {
+                            'Content-Type': 'application/json', // set the data type as JSON
+                        }
+                    })
+                        .then(res => {
+                            return res.json();
+                        })
+                        .then(data => {
+                            webstore.lessons = data;
+                        })
+                },
 
             // Methods for handling user interactions and form submission
             methods: {
@@ -315,7 +341,73 @@
                 },
 
                 submitForm() {
-                    { alert('Order Submitted! :D') }
+                    alert('Order Submitted!');
+                        postOrder(this.order.fullName, this.order.phone, this.car
+                        function postOrder(name, contact, orderCart) {
+                            var finalCart = []; //...new Array for cart items
+                
+                            for (let i = 0; i < orderCart.length; i++) {
+                                const uniqueCartOrder = { "_id": orderCart[i]._id, "lesson": orderCart[i].name, "quantity": 1 }; 
+                
+                                //...for loop to change quantity of each UNIQUE item 
+                                let found = false;
+                                for (let j = 0; j < finalCart.length; j++) {
+                                    if (finalCart[j]._id == orderCart[i]._id) { //... if item already exists in finalCart Array
+                                        found = true;
+                                        finalCart[j].quantity++; //...increases quantity
+                                        break;
+                                    }
+                                }
+                                //...adds new item to cart
+                                if (!found) {
+                                    finalCart.push(uniqueCartOrder);
+                                }
+                            }
+                            console.log(finalCart);
+const newOrder = { "order": finalCart, "name": name, "contact": contact } //...creates JSON object for fetch POST request
+                        fetch('http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/orders', {
+                            method: 'POST', // set the HTTP method as 'POST'
+                            headers: {
+                                'Content-Type': 'application/json', // set the data type as JSON
+                            },
+                            body: JSON.stringify(newOrder), // need to stringify the JSON object
+                        })
+                            .then(response => response.json()) // Parse response as JSON
+                            .then(function () {
+                                //...loop through finalCart array to update the availability of lessons
+                                for (let i = 0; i < finalCart.length; i++) {
+                                    //...fetch PUT to update the availability
+                                    fetch("http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/lessons/" + finalCart[i]._id, { // Fixed syntax error here
+                                        method: 'PUT',
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({ "availability": lessons[i].availability - finalCart[i].quantity }), //...Subtracts cart quantity from lessons availability
+                                    })
+                                        .then(response => response.json()) // Parse response as JSON
+                                        .then(data => {
+                                            console.log(data); // Log response from PUT request
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+
+                                    console.log("Lessons array: ", lessons[i])
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+
+                        // clears the shopping cart, indicating that the order has been successfully submitted 
+                        this.cart = [];
+                        //clears the user's input for full name and phone number after the order has been submitted.
+                        this.order = {
+                            fullName: '',
+                            phone: '',
+                        };
+                    }
+                },
                 },
 
                 validateAndSubmit() {
