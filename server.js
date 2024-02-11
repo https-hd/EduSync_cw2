@@ -23,7 +23,6 @@ MongoClient.connect('mongodb+srv://HA1145:Hooda786@cluster0.bswsi9p.mongodb.net'
     db = client.db('Webstore')
 })
 
-//Logger middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
   next();
@@ -39,14 +38,13 @@ function fileExists(filePath) {
   });
 }
 
-// Static file middleware for serving images
+// Route to serve images
 app.get('/images/:filename', async (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, 'images', filename);
 
-// Custom middleware for handling non-existent images only when the path starts with "/images"
   try {
-      const exists = await fileExists(filePath);
+    const exists = await fileExists(filePath);
     if (!exists) {
       return res.status(404).send('Image not found');
     }
@@ -60,7 +58,7 @@ app.get('/images/:filename', async (req, res) => {
 //after you type this line, go to terminal and type this command node server.js
 app.get('/', (req, res, next) => {
     res.send('Select a collection, e.g.,/collection/lessons')
-}) 
+}) //until here
 
 app.param('collectionName', (req, res, next, collectionName) => {
     req.collection = db.collection(collectionName)
