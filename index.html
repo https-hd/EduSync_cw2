@@ -7,10 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 
     <!--Link to your local JavaScript file-->
-    <script src="products.js"></script>
+    <!-- <script src="products.js"></script> -->
 
     <!--Link to your local CSS file-->
-    <link rel="stylesheet" type="text/css" href="../public/style.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
 
     <!--CDN link for font awesome-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
@@ -92,7 +92,6 @@
         </div>
 
         <main>
-            <h1>{{sitename}}</h1>
             <div id="products-section">
                 <!-- Product display section -->
                 <div v-if="showProduct" style="overflow: scroll;display: flex; width: 100%;">
@@ -282,23 +281,27 @@
                 // selectedSortOrder: 'lowToHigh'
             },
 
-            created:
-                //..fetch GET to retrieve all lessons from lessons collection
-                function () {
-                    // set the url to your server and route
-                    fetch('http://localhost:3000/collection/lessons', {
-                        method: 'GET', // set the HTTP method as 'GET'
-                        headers: {
-                            'Content-Type': 'application/json', // set the data type as JSON
-                        }
-                    })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .then(data => {
-                            webstore.lessons = data;
-                        })
-                },
+created: function () {
+    fetch('http://localhost:3000/collection/lessons', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return res.json();
+    })
+    .then(data => {
+        this.products = data; // Assign the fetched data to the products array
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+},
+
 
             // Methods for handling user interactions and form submission
             methods: {
@@ -341,74 +344,75 @@
                 },
 
                 submitForm() {
-                    alert('Order Submitted!');
-                        postOrder(this.order.fullName, this.order.phone, this.car
-                        function postOrder(name, contact, orderCart) {
-                            var finalCart = []; //...new Array for cart items
-                
-                            for (let i = 0; i < orderCart.length; i++) {
-                                const uniqueCartOrder = { "_id": orderCart[i]._id, "lesson": orderCart[i].name, "quantity": 1 }; 
-                
-                                //...for loop to change quantity of each UNIQUE item 
-                                let found = false;
-                                for (let j = 0; j < finalCart.length; j++) {
-                                    if (finalCart[j]._id == orderCart[i]._id) { //... if item already exists in finalCart Array
-                                        found = true;
-                                        finalCart[j].quantity++; //...increases quantity
-                                        break;
-                                    }
-                                }
-                                //...adds new item to cart
-                                if (!found) {
-                                    finalCart.push(uniqueCartOrder);
-                                }
-                            }
-                            console.log(finalCart);
-const newOrder = { "order": finalCart, "name": name, "contact": contact } //...creates JSON object for fetch POST request
-                        fetch('http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/orders', {
-                            method: 'POST', // set the HTTP method as 'POST'
-                            headers: {
-                                'Content-Type': 'application/json', // set the data type as JSON
-                            },
-                            body: JSON.stringify(newOrder), // need to stringify the JSON object
-                        })
-                            .then(response => response.json()) // Parse response as JSON
-                            .then(function () {
-                                //...loop through finalCart array to update the availability of lessons
-                                for (let i = 0; i < finalCart.length; i++) {
-                                    //...fetch PUT to update the availability
-                                    fetch("http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/lessons/" + finalCart[i]._id, { // Fixed syntax error here
-                                        method: 'PUT',
-                                        headers: {
-                                            "Content-Type": "application/json"
-                                        },
-                                        body: JSON.stringify({ "availability": lessons[i].availability - finalCart[i].quantity }), //...Subtracts cart quantity from lessons availability
-                                    })
-                                        .then(response => response.json()) // Parse response as JSON
-                                        .then(data => {
-                                            console.log(data); // Log response from PUT request
-                                        })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                        });
+    alert('Order Submitted!');
+    postOrder(this.order.fullName, this.order.phone, this.cart);
 
-                                    console.log("Lessons array: ", lessons[i])
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
+    function postOrder(name, contact, orderCart) {
+        var finalCart = []; //...new Array for cart items
+    
+        for (let i =  0; i < orderCart.length; i++) {
+            const uniqueCartOrder = { "_id": orderCart[i]._id, "lesson": orderCart[i].name, "quantity":  1 };  
+        
+            //...for loop to change quantity of each UNIQUE item  
+            let found = false;
+            for (let j =  0; j < finalCart.length; j++) {
+                if (finalCart[j]._id == orderCart[i]._id) { //... if item already exists in finalCart Array
+                    found = true;
+                    finalCart[j].quantity++; //...increases quantity
+                    break;
+                }
+            }
+            //...adds new item to cart
+            if (!found) {
+                finalCart.push(uniqueCartOrder);
+            }
+        }
+        console.log(finalCart);
+        const newOrder = { "order": finalCart, "name": name, "contact": contact }; //...creates JSON object for fetch POST request
+        fetch('http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/orders', {
+            method: 'POST', // set the HTTP method as 'POST'
+            headers: {
+                'Content-Type': 'application/json', // set the data type as JSON
+            },
+            body: JSON.stringify(newOrder), // need to stringify the JSON object
+        })
+        .then(response => response.json()) // Parse response as JSON
+        .then(function () {
+            //...loop through finalCart array to update the availability of lessons
+            for (let i =  0; i < finalCart.length; i++) {
+                //...fetch PUT to update the availability
+                fetch("http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/lessons/" + finalCart[i]._id, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ "availability": lessons[i].availability - finalCart[i].quantity }), //...Subtracts cart quantity from lessons availability
+                })
+                .then(response => response.json()) // Parse response as JSON
+                .then(data => {
+                    console.log(data); // Log response from PUT request
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            
+                console.log("Lessons array: ", lessons[i]);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    
+        // clears the shopping cart, indicating that the order has been successfully submitted  
+        this.cart = [];
+        //clears the user's input for full name and phone number after the order has been submitted.
+        this.order = {
+            fullName: '',
+            phone: '',
+        };
+    }
+},
 
-                        // clears the shopping cart, indicating that the order has been successfully submitted 
-                        this.cart = [];
-                        //clears the user's input for full name and phone number after the order has been submitted.
-                        this.order = {
-                            fullName: '',
-                            phone: '',
-                        };
-                    }
-                },
-                },
 
                 validateAndSubmit() {
                     if (
