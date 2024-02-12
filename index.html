@@ -1,32 +1,35 @@
-<!DOCTYPE html>
 <html>
 
 <head>
     <title>EduSync</title>
 
-    <!-- CDN link for Vue.js -->
+    <!--CDN link for Vue.js-->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 
     <!--Link to your local JavaScript file-->
-    <script src="products.js"></script>
+    <!-- <script src="products.js"></script> -->
 
     <!--Link to your local CSS file-->
-    <link rel="stylesheet" type="text/css" href="../public/style.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
 
-    <!-- CDN link for font awesome -->
+    <!--CDN link for font awesome-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 
-    <!-- CDN link for Bootstrap CSS -->
+    <!--CDN link for Bootstrap CSS-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-        crossorigin="anonymous">
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
 </head>
 
+
 <body>
+    
     <!-- Vue app container -->
     <div id="app">
+
         <!-- Navigation section -->
         <div class="navigationContainer">
+
             <!-- Logo and cart icon in the navigation bar -->
             <ul class="navbar">
                 <li>
@@ -37,20 +40,23 @@
 
                 <li style="float:right">
                     <a button v-on:click="showCheckout">
+
                         <!-- Cart icon and item count -->
                         {{ cartItemCount }}
                         <span class="fas fa-cart-plus"></span>
                         Checkout
+                        </button>
                     </a>
                 </li>
             </ul>
 
             <!-- Category selection and sorting options -->
             <ul class="categoryNavbar">
+
                 <!-- Search bar and category links -->
                 <li style="padding-left: 1%">
                     <input v-model.trim="searchQuery" type="search" class="searchbar" id="searchbar"
-                        placeholder="Search Courses & Activities">
+                        placeholder="Search Courses & Activites">
                 </li>
                 <li>
                     <a @click="selectCategory('all')">All Products</a>
@@ -86,12 +92,13 @@
         </div>
 
         <main>
-            <h1>{{sitename}}</h1>
             <div id="products-section">
                 <!-- Product display section -->
                 <div v-if="showProduct" style="overflow: scroll;display: flex; width: 100%;">
+
                     <!-- Display individual products with details -->
                     <div class="product" v-for="product in sortedAndFilteredProducts">
+
                         <!-- Product details -->
                         <figure>
                             <img v-bind:src="product.image" width="250" height="250">
@@ -100,7 +107,9 @@
                         <p v-html="product.description"></p>
                         <p>Location: {{ product.location }}</p>
                         <p>Price: {{product.price}} AED</p>
-                        <p>Inventory: {{product.availableInventory - cartCount(product.id)}}</p>
+                        <p>
+                            Inventory: {{product.availableInventory - cartCount(product.id)}}
+                        </p>
 
                         <!-- Add to cart and remove from cart buttons -->
                         <button v-on:click="addToCart(product)" v-if="canAddToCart(product)">
@@ -118,7 +127,8 @@
                             All Out!
                         </span>
                         <span v-else-if="product.availableInventory - cartCount(product.id) < 5">
-                            only {{product.availableInventory - cartCount(product.id)}} Left!!
+                            only {{product.availableInventory -
+                            cartCount(product.id)}} Left!!
                         </span>
                         <span v-else>
                             BUY NOW!!
@@ -132,16 +142,31 @@
                     </div>
                 </div>
 
+
                 <!-- Checkout and Cart display section -->
                 <div v-else>
                     <div class="checkout-container">
+
                         <!-- Checkout form -->
                         <h2>Checkout</h2>
+
                         <!-- Input fields for user details -->
-                        <p><strong>First Name:</strong><input v-model.trim="order.firstName" required></p>
-                        <p><strong>Last Name:</strong><input v-model.trim="order.lastName" required></p>
-                        <p><strong>Address:</strong><input v-model="order.address" required></p>
-                        <p><strong>City:</strong><input v-model="order.city" required></p>
+                        <p>
+                            <strong>First Name:</strong>
+                            <input v-model.trim="order.firstName" required>
+                        </p>
+                        <p>
+                            <strong>Last Name:</strong>
+                            <input v-model.trim="order.lastName" required>
+                        </p>
+                        <p>
+                            <strong>Address:</strong>
+                            <input v-model="order.address" required>
+                        </p>
+                        <p>
+                            <strong>City:</strong>
+                            <input v-model="order.city" required>
+                        </p>
                         <p>
                             <strong>Province:</strong>
                             <select v-model="order.province" required>
@@ -150,16 +175,26 @@
                                 </option>
                             </select>
                         </p>
-                        <p><strong>Zip/Postal Code:</strong><input v-model.number="order.zip" type="number" required>
+                        <p>
+                            <strong>Zip/Postal Code:</strong>
+                            <input v-model.number="order.zip" type="number" required>
                         </p>
-                        <p><strong>Email (Gmail):</strong><input v-model.trim="order.email"
-                                required pattern="^[a-zA-Z0-9._%+-]+@gmail.com$" title="Enter a valid Gmail address">
+                        <p>
+                            <strong>Email (Gmail):</strong>
+                            <input v-model.trim="order.email" required pattern="^[a-zA-Z0-9._%+-]+@gmail.com$"
+                                title="Enter a valid Gmail address">
                         </p>
-                        <p><input type="checkbox" id="gift" value="true" v-model="order.gift" :true-value="order.sendGift"
-                                :false-value="order.dontSendGift"> <label for="gift"> Ship As Gift?</label></p>
-                        <p><input type="radio" id="home" value="Home" v-model="order.method" required> <label for="home">
-                                Home</label> <input type="radio" id="business" value="Business" v-model="order.method"
-                                required> <label for="business"> Business</label></p>
+                        <p>
+                            <input type="checkbox" id="gift" value="true" v-model="order.gift"
+                                :true-value="order.sendGift" :false-value="order.dontSendGift">
+                            <label for="gift"> Ship As Gift?</label>
+                        </p>
+                        <p>
+                            <input type="radio" id="home" value="Home" v-model="order.method" required>
+                            <label for="home"> Home</label>
+                            <input type="radio" id="business" value="Business" v-model="order.method" required>
+                            <label for="business"> Business</label>
+                        </p>
 
                         <button @click="validateAndSubmit">Place Order</button>
                     </div>
@@ -184,6 +219,8 @@
                                         height="100">
                                     <p>Price: {{ getProductById(productId).price }}</p>
                                     <p>{{ getProductById(productId).description }}</p>
+
+                                    
                                     <button @click="removeFromCart(getProductById(productId))">Remove</button>
                                     <button @click="addToCart(getProductById(productId))">Add</button>
                                     <br><br>
@@ -191,9 +228,13 @@
                             </div>
                         </div>
                     </div>
+
+
+
                     <!-- Buttons to navigate or submit order -->
                     <button @click="navigateToProducts">Add items to cart</button>
                     <button @click="validateAndSubmit">Place Order</button>
+
                 </div>
             </div>
         </main>
@@ -201,6 +242,7 @@
 
     <!-- Vue.js script -->
     <script type="text/javascript">
+
         // Vue instance for the EduSync web application
         let webstore = new Vue({
             el: '#app',
@@ -218,59 +260,52 @@
                 sortAttribute: "title",
                 sortOrder: "asc",
                 // Order information (first name last name, address, email)
-                orders: {
-                    name: "",
-                    productid: "",
-                    availabileinventory: "",
+                order: {
+                    firstName: '',
+                    lastName: '',
+                    address: '',
+                    email: '',
                 },
+
                 provinces: {
                     AB: 'Alberta',
-                    SK: 'Saskatchewan',
+                    SK: 'Saskachewan',
                     BC: 'British Columbia',
                     ON: 'Ontario'
                 },
+
+
+                // products: products,
                 searchQuery: '',
-                viewSearchResult: false,
+                
+                // selectedSortOrder: 'lowToHigh'
             },
 
-            created:
-                //..fetch GET to retrieve all lessons from lessons collection
-                function () {
-                    // set the url to your server and route
+            created: function () {
                     fetch('http://localhost:3000/collection/lessons', {
-                        method: 'GET', // set the HTTP method as 'GET'
-                        headers: {
-                            'Content-Type': 'application/json', // set the data type as JSON
-                        }
-                    })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .then(data => {
-                            webstore.lessons = data;
-                        })
-                },
+                    method: 'GET',
+                    headers: {
+                    'Content-Type': 'application/json',
+        }
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return res.json();
+    })
+    .then(data => {
+        this.products = data; // Assign the fetched data to the products array
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+},
 
             // Methods for handling user interactions and form submission
             methods: {
                 addToCart(product) {
                     this.cart.push(product.id);
-                },
-
-                addItemtoDB() {
-                    const addLesson = {
-                        "id": 1,
-                        "subject": "English Level 3X",
-                        "image": "img/english.png",
-                        "price": 40,
-                        "spaces": 25,
-                        "location": "London",
-                    }
-                    fetch("http://localhost:3000/collection/lessons", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", },
-                        body: JSON.stringify(addLesson)
-                    });
                 },
 
                 removeFromCart(product) {
@@ -296,79 +331,87 @@
                     return this.cart.filter(id => id === productId).length;
                 },
 
+                removeFromCart(product) {
+                    const index = this.cart.indexOf(product.id);
+                    if (index !== -1) {
+                        this.cart.splice(index, 1);
+                    }
+                },
+
                 getProductById(productId) {
                     return this.products.find(product => product.id === productId);
                 },
 
                 submitForm() {
-                    alert('Order Submitted!');
-                        postOrder(this.order.fullName, this.order.phone, this.car
-                        function postOrder(name, contact, orderCart) {
-                            var finalCart = []; //...new Array for cart items
-                
-                            for (let i = 0; i < orderCart.length; i++) {
-                                const uniqueCartOrder = { "_id": orderCart[i]._id, "lesson": orderCart[i].name, "quantity": 1 }; 
-                
-                                //...for loop to change quantity of each UNIQUE item 
-                                let found = false;
-                                for (let j = 0; j < finalCart.length; j++) {
-                                    if (finalCart[j]._id == orderCart[i]._id) { //... if item already exists in finalCart Array
-                                        found = true;
-                                        finalCart[j].quantity++; //...increases quantity
-                                        break;
-                                    }
-                                }
-                                //...adds new item to cart
-                                if (!found) {
-                                    finalCart.push(uniqueCartOrder);
-                                }
-                            }
-                            console.log(finalCart);
-const newOrder = { "order": finalCart, "name": name, "contact": contact } //...creates JSON object for fetch POST request
-                        fetch('http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/orders', {
-                            method: 'POST', // set the HTTP method as 'POST'
-                            headers: {
-                                'Content-Type': 'application/json', // set the data type as JSON
-                            },
-                            body: JSON.stringify(newOrder), // need to stringify the JSON object
-                        })
-                            .then(response => response.json()) // Parse response as JSON
-                            .then(function () {
-                                //...loop through finalCart array to update the availability of lessons
-                                for (let i = 0; i < finalCart.length; i++) {
-                                    //...fetch PUT to update the availability
-                                    fetch("http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/lessons/" + finalCart[i]._id, { // Fixed syntax error here
-                                        method: 'PUT',
-                                        headers: {
-                                            "Content-Type": "application/json"
-                                        },
-                                        body: JSON.stringify({ "availability": lessons[i].availability - finalCart[i].quantity }), //...Subtracts cart quantity from lessons availability
-                                    })
-                                        .then(response => response.json()) // Parse response as JSON
-                                        .then(data => {
-                                            console.log(data); // Log response from PUT request
-                                        })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                        });
+    alert('Order Submitted!');
+    postOrder(this.order.fullName, this.order.phone, this.cart);
 
-                                    console.log("Lessons array: ", lessons[i])
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
+    function postOrder(name, contact, orderCart) {
+        var finalCart = []; //...new Array for cart items
+    
+        for (let i =  0; i < orderCart.length; i++) {
+            const uniqueCartOrder = { "_id": orderCart[i]._id, "lesson": orderCart[i].name, "quantity":  1 };  
+        
+            //...for loop to change quantity of each UNIQUE item  
+            let found = false;
+            for (let j =  0; j < finalCart.length; j++) {
+                if (finalCart[j]._id == orderCart[i]._id) { //... if item already exists in finalCart Array
+                    found = true;
+                    finalCart[j].quantity++; //...increases quantity
+                    break;
+                }
+            }
+            //...adds new item to cart
+            if (!found) {
+                finalCart.push(uniqueCartOrder);
+            }
+        }
+        console.log(finalCart);
+        const newOrder = { "order": finalCart, "name": name, "contact": contact }; //...creates JSON object for fetch POST request
+        fetch('http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/orders', {
+            method: 'POST', // set the HTTP method as 'POST'
+            headers: {
+                'Content-Type': 'application/json', // set the data type as JSON
+            },
+            body: JSON.stringify(newOrder), // need to stringify the JSON object
+        })
+        .then(response => response.json()) // Parse response as JSON
+        .then(function () {
+            //...loop through finalCart array to update the availability of lessons
+            for (let i =  0; i < finalCart.length; i++) {
+                //...fetch PUT to update the availability
+                fetch("http://cst3145-cw2-env.eba-qvjju2fi.eu-west-2.elasticbeanstalk.com/collection/lessons/" + finalCart[i]._id, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ "availability": lessons[i].availability - finalCart[i].quantity }), //...Subtracts cart quantity from lessons availability
+                })
+                .then(response => response.json()) // Parse response as JSON
+                .then(data => {
+                    console.log(data); // Log response from PUT request
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            
+                console.log("Lessons array: ", lessons[i]);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    
+        // clears the shopping cart, indicating that the order has been successfully submitted  
+        this.cart = [];
+        //clears the user's input for full name and phone number after the order has been submitted.
+        this.order = {
+            fullName: '',
+            phone: '',
+        };
+    }
+},
 
-                        // clears the shopping cart, indicating that the order has been successfully submitted 
-                        this.cart = [];
-                        //clears the user's input for full name and phone number after the order has been submitted.
-                        this.order = {
-                            fullName: '',
-                            phone: '',
-                        };
-                    }
-                },
-                },
 
                 validateAndSubmit() {
                     if (
@@ -426,7 +469,7 @@ const newOrder = { "order": finalCart, "name": name, "contact": contact } //...c
 
             // Computed properties for dynamic data calculations
             computed: { // the Computed Property object
-                cartItemCount: function () { // the property name
+                cartItemCount: function () { //the property name
                     // its value is calculated when it is called
                     return this.cart.length || '';
                 },
@@ -442,6 +485,8 @@ const newOrder = { "order": finalCart, "name": name, "contact": contact } //...c
                         return product.description.toLowerCase().includes('extracurricular activity');
                     });
                 },
+
+
 
                 uniqueCartItems() {
                     // Create a set of unique product IDs in the cart
@@ -484,6 +529,9 @@ const newOrder = { "order": finalCart, "name": name, "contact": contact } //...c
 
                     return productsArray;
                 },
+
+
+
             }
         });
     </script>
