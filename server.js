@@ -1,15 +1,16 @@
-
-
-const express = require('express')
+const express = require('express');
 const path = require('path');
-const app = express()
+const app = express();
 const fs = require('fs');
+const cors = require('cors');
+
+// Use cors middleware to enable CORS for all routes
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'edusync_cw2')));
+app.use(express.json());
+app.set('port', 4000);
 
-
-app.use(express.json())
-app.set('port', 3000)
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -26,7 +27,7 @@ MongoClient.connect('mongodb+srv://HA1145:Hooda786@cluster0.bswsi9p.mongodb.net'
     db = client.db('Webstore')
 })
 
-//Logger middleware
+// Logger middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
   next();
@@ -134,9 +135,10 @@ app.get('/collection/:collectionName/search/:k', (req, res) => {
 //     console.log('Express.js server running at localhost:3000')
 // })
 
-const port = process.env.PORT || 4000
-app.listen(port)
-
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+    console.log(`Express.js server running at localhost:${port}`);
+});
 
 // app.get('/collection/:collectionName', (req, res, next) => {
 //     console.log(req.collection)

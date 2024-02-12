@@ -281,23 +281,27 @@
                 // selectedSortOrder: 'lowToHigh'
             },
 
-            created:
-                //..fetch GET to retrieve all lessons from lessons collection
-                function () {
-                    // set the url to your server and route
-                    fetch('http://localhost4000/collection/lessons', {
-                        method: 'GET', // set the HTTP method as 'GET'
-                        headers: {
-                            'Content-Type': 'application/json', // set the data type as JSON
-                        }
-                    })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .then(data => {
-                            webstore.products = data;
-                        })
-                },
+            created: function () {
+                fetch('http://127.0.0.1:4000/collection/lessons', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    this.products = data; // Assign the fetched data to the products array
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+            },
+
 
             // Methods for handling user interactions and form submission
             methods: {
