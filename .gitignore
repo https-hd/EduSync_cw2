@@ -1,1 +1,13 @@
 
+# dependancy directories
+node_modules/
+jspm_packages/
+
+# Bower dependency directory 
+bower_components
+
+£# complied binary addons
+build/Release
+
+# TypeScript v1 declaration
+typings/
