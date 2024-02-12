@@ -3,14 +3,7 @@
     "customerDetails": {
         "firstName": "John",
         "lastName": "Doe",
-        "address": "123 Main Street",
-        "city": "Anytown",
-        "province": "CA",
-        "zip": "12345",
-        "method": "Standard",
-        "gift": false,
-        "sendGift": "Send as a Gift",
-        "dontSendGift": "Don't send as a gift"
+        "email": "john.doe@example.com"
     },
     "cart": {
         "lessonID1": "2",

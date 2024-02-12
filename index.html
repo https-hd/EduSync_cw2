@@ -240,7 +240,7 @@
                 // Array to store items in the cart
                 cart: [],
                 // Attribute to sort products by (default: title of Subject)
-                sortAttribute: "title",
+                sortAttribute: "subject",
                 sortOrder: "asc",
                 // Order information (first name last name, address, email)
                 order: {
@@ -327,85 +327,14 @@
                 },
 
                 submitForm() {
-    alert('Order Submitted!');
-    postOrder(this.order.fullName, this.order.phone, this.cart);
-
-    function postOrder(name, contact, orderCart) {
-        var finalCart = []; //...new Array for cart items
-    
-        for (let i =  0; i < orderCart.length; i++) {
-            const uniqueCartOrder = { "_id": orderCart[i]._id, "lesson": orderCart[i].name, "quantity":  1 };  
-        
-            //...for loop to change quantity of each UNIQUE item  
-            let found = false;
-            for (let j =  0; j < finalCart.length; j++) {
-                if (finalCart[j]._id == orderCart[i]._id) { //... if item already exists in finalCart Array
-                    found = true;
-                    finalCart[j].quantity++; //...increases quantity
-                    break;
-                }
-            }
-            //...adds new item to cart
-            if (!found) {
-                finalCart.push(uniqueCartOrder);
-            }
-        }
-        console.log(finalCart);
-        const newOrder = { "order": finalCart, "name": name, "contact": contact }; //...creates JSON object for fetch POST request
-        fetch('http://localhost4000/collection/lessons', {
-            method: 'POST', // set the HTTP method as 'POST'
-            headers: {
-                'Content-Type': 'application/json', // set the data type as JSON
-            },
-            body: JSON.stringify(newOrder), // need to stringify the JSON object
-        })
-        .then(response => response.json()) // Parse response as JSON
-        .then(function () {
-            //...loop through finalCart array to update the availability of lessons
-            for (let i =  0; i < finalCart.length; i++) {
-                //...fetch PUT to update the availability
-                fetch("http://localhost4000/collection/lessons" + finalCart[i]._id, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ "availability": lessons[i].availability - finalCart[i].quantity }), //...Subtracts cart quantity from lessons availability
-                })
-                .then(response => response.json()) // Parse response as JSON
-                .then(data => {
-                    console.log(data); // Log response from PUT request
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            
-                console.log("Lessons array: ", lessons[i]);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    
-        // clears the shopping cart, indicating that the order has been successfully submitted  
-        this.cart = [];
-        //clears the user's input for full name and phone number after the order has been submitted.
-        this.order = {
-            fullName: '',
-            phone: '',
-        };
-    }
-},
+                    alert('Order Submitted!');
+                },
 
 
                 validateAndSubmit() {
                     if (
                         this.order.firstName &&
                         this.order.lastName &&
-                        this.order.address &&
-                        this.order.city &&
-                        this.order.province &&
-                        this.order.zip &&
-                        this.order.method &&
                         this.order.email
                     ) {
                         if (this.order.email.match(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)) {

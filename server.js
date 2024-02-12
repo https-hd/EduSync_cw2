@@ -135,7 +135,7 @@ app.get('/collection/:collectionName/search/:k', (req, res) => {
 //     console.log('Express.js server running at localhost:3000')
 // })
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4000
 app.listen(port, () => {
     console.log(`Express.js server running at localhost:${port}`);
 });
