@@ -1,3 +1,5 @@
+http://localhost:3000/index.html
+
 Repository link
 https://github.com/https-hd/EduSync_cw2/tree/main
 
