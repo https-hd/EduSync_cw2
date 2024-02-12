@@ -5,6 +5,7 @@ const path = require('path');
 const app = express()
 const fs = require('fs');
 
+app.use(express.static(path.join(__dirname, 'edusync_cw2')));
 
 
 app.use(express.json())
@@ -61,7 +62,7 @@ app.get('/images/:filename', async (req, res) => {
 
 //after you type this line, go to terminal and type this command node server.js
 app.get('/', (req, res, next) => {
-    res.send('Select a collection, e.g.,/collection/lessons')
+    res.send('Select a collection, e.g.,/collection/products')
 }) 
 
 app.param('collectionName', (req, res, next, collectionName) => {
@@ -129,9 +130,13 @@ app.get('/collection/:collectionName/search/:k', (req, res) => {
         });
 });
 
-app.listen(3000, () => {
-    console.log('Express.js server running at localhost:3000')
-})
+// app.listen(3000, () => {
+//     console.log('Express.js server running at localhost:3000')
+// })
+
+const port = process.env.PORT || 4000
+app.listen(port)
+
 
 // app.get('/collection/:collectionName', (req, res, next) => {
 //     console.log(req.collection)
@@ -205,6 +210,3 @@ app.listen(3000, () => {
 //             res.send((result.result.n === 1) ? { msg: 'success' } : { msg: 'error' })
 //         })
 // })
-
-const port = process.env.PORT || 4000
-app.listen(port)
