@@ -147,25 +147,14 @@
                             <input v-model="order.address" required>
                         </p>
                         <p>
-                            <strong>City:</strong>
-                            <input v-model="order.city" required>
-                        </p>
-                        <p>
-                            <strong>Province:</strong>
-                            <select v-model="order.province" required>
-                                <option disabled value>Province</option>
-                                <option v-for="(province, key) in provinces" :key="key" :value="province">{{ key }}
-                                </option>
-                            </select>
-                        </p>
-                        <p>
-                            <strong>Zip/Postal Code:</strong>
-                            <input v-model.number="order.zip" type="number" required>
-                        </p>
-                        <p>
                             <strong>Email (Gmail):</strong>
                             <input v-model.trim="order.email" required pattern="^[a-zA-Z0-9._%+-]+@gmail.com$"
                                 title="Enter a valid Gmail address">
+                        </p>
+                        <p>
+                            <strong>Phone:</strong>
+                            <input v-model.trim="order.phone"
+                                title="Enter your Mobile Number">
                         </p>
                         <p>
                             <input type="checkbox" id="gift" value="true" v-model="order.gift"
@@ -265,7 +254,8 @@
             },
 
             created: function () {
-                fetch('http://edusync6-env.eba-hzpc2shb.eu-west-2.elasticbeanstalk.com/collection/lessons', {
+                fetch('http://localhost:4000/collection/lessons', {
+                    // for making site work http://localhost:3000/index.html, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -326,9 +316,71 @@
                     return this.products.find(product => product.id === productId);
                 },
 
-                submitForm() {
-                    alert('Order Submitted!');
-                },
+                // submitForm() {
+                //     if (this.lessonOrder.errorMessage == "" && this.cart.length > 0) {
+                //         alert("Successfully placed order!");
+                //         document.getElementById('submitForm').innerHTML = "Thank you for purchasing! <br>"
+
+                //         //function to add the order to the database
+                //         addOrder(this.order.firstName, this.order.lastName, this.order.email,  this.cart);
+
+                //         //function to update the spaces of the lessons
+                //         updateorder(this.cart);
+
+                //         //clearing the fields
+                //         this.order.firstName = "";
+                //         this.order.lastName = "";
+                //         this.order.email = "";
+                //         this.cart.splice(0, this.cart.length);
+                //     }
+                //     else if (this.cart.length == 0) {
+                //         alert("No products in cart!")
+                //     }
+                //     else {
+                //         alert("Please enter the correct values.");
+                //     }
+
+                //     //Add Order function. The following function addes the order to the database
+                //     function addOrder(firstName, lastName, email, cartOrder) {
+                //         var final_cart = [];
+                //         var n = 0;
+
+                //         //making an array with unique orders incase same lessons are ordered
+                //         for (i = 0; i < cartOrder.length; i++) {
+                //             const uniqueOrder = { "id": cartOrder[i]._id, "spaces": 1 };
+                //             if (final_cart.length == 0) {
+                //                 final_cart.push(uniqueOrder);
+                //             }
+                //             else {
+                //                 for (a = 0; a < final_cart.length; a++) {
+                //                     if (final_cart[a].id == cartOrder[i]._id) {
+                //                         final_cart[a].spaces = final_cart[a].spaces + 1;
+                //                         break;
+                //                     }
+                //                     else {
+                //                         final_cart.push(uniqueOrder);
+                //                         break;
+                //                     }
+                //                 }
+                //             }
+                //         }
+
+                //         //final order object that is added into MongoDB
+                //         const newOrder = { "firstName": firstName, "lastName": lastName, "email": email, "order": final_cart };
+
+                //         //POST request to add the order to the database.
+                //         fetch("http://localhost:3000/collection/orders", {
+                //             method: 'POST',
+                //             headers: {
+                //                 "Content-Type": "application/json",
+                //                 "Access-Control-Allow-Origin": "*",
+                //                 "Access-Control-Allow-Credentials": true
+                //             },
+                //             body: JSON.stringify(newOrder),
+                //         }).then(response => response.text()).then(responseJSON => {
+                //             updateorder(cartOrder);
+                //         });
+                //     }
 
 
                 validateAndSubmit() {

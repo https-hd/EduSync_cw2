@@ -1,12 +1,6 @@
 {
-    "_id": "60d5ecb0c371138f8c123456",
-    "customerDetails": {
-        "firstName": "John",
-        "lastName": "Doe",
-        "email": "john.doe@example.com"
-    },
-    "cart": {
-        "lessonID1": "2",
-        "lessonID2": "1"
-    }
+    "firstName": "Tutorialspoint",
+    "lastName": "Tutorialspoint",
+    "email": "abc@gmail.com",
+    "phone": "99599125"
 }
