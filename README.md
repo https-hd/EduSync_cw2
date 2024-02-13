@@ -1,5 +1,8 @@
-Repo links
+http://localhost:3000/index.html
 
-AWS Links
+Repository link
+https://github.com/https-hd/EduSync_cw2/tree/main
 
 Github pages links
+GET Request: https://github.com/https-hd/EduSync_cw2/blob/main/response.json
+
