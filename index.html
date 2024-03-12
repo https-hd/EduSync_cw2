@@ -127,50 +127,51 @@
 
 
                 <!-- Checkout and Cart display section -->
-                <div v-else>
-                    <div class="checkout-container">
+                <!-- <div v-else>
+                    <div class="checkout-container"> -->
 
                         <!-- Checkout form -->
-                        <h2>Checkout</h2>
+                        <!-- <h2>Checkout</h2> -->
 
                         <!-- Input fields for user details -->
-                        <p>
-                            <strong>First Name:</strong>
-                            <input v-model.trim="order.firstName" required>
-                        </p>
-                        <p>
-                            <strong>Last Name:</strong>
-                            <input v-model.trim="order.lastName" required>
-                        </p>
-                        <p>
-                            <strong>Address:</strong>
-                            <input v-model="order.address" required>
-                        </p>
-                        <p>
-                            <strong>Email (Gmail):</strong>
-                            <input v-model.trim="order.email" required pattern="^[a-zA-Z0-9._%+-]+@gmail.com$"
-                                title="Enter a valid Gmail address">
-                        </p>
-                        <p>
-                            <strong>Phone:</strong>
-                            <input v-model.trim="order.phone"
-                                title="Enter your Mobile Number">
-                        </p>
-                        <p>
-                            <input type="checkbox" id="gift" value="true" v-model="order.gift"
-                                :true-value="order.sendGift" :false-value="order.dontSendGift">
-                            <label for="gift"> Ship As Gift?</label>
-                        </p>
-                        <p>
-                            <input type="radio" id="home" value="Home" v-model="order.method" required>
-                            <label for="home"> Home</label>
-                            <input type="radio" id="business" value="Business" v-model="order.method" required>
-                            <label for="business"> Business</label>
-                        </p>
+                        <!-- <p>
+            <strong>First Name:</strong>
+            <input v-model.trim="order.firstName" @input="validateFullName" required>
+        </p>
+        <p>
+            <strong>Last Name:</strong>
+            <input v-model.trim="order.lastName" @input="validateFullName" required>
+        </p>
+        <p>
+            <strong>Phone:</strong>
+            <input v-model.trim="order.phone" @input="validatePhone" required>
+        </p>
 
-                        <button @click="validateAndSubmit">Place Order</button>
+                        <button @click="submitForm">Place Order</button> -->
+
+                        <!-- <button @click="submitForm" :disabled="!validOrderInfo">Place Order</button> -->
+<!-- 
                     </div>
-                </div>
+                </div> -->
+
+                <div v-else>
+    <div class="checkout-container">
+        <h2>Checkout</h2>
+        <p>
+            <strong>First Name:</strong>
+            <input v-model.trim="order.firstName" @input="validateFullName" required>
+        </p>
+        <p>
+            <strong>Last Name:</strong>
+            <input v-model.trim="order.lastName" @input="validateFullName" required>
+        </p>
+        <p>
+            <strong>Phone:</strong>
+            <input v-model.trim="order.phone" @input="validatePhone" required>
+        </p>
+        <button @click="submitForm">Place Order</button>
+    </div>
+</div>
 
                 <div class="checkout-container">
                     <!-- Display Products in Cart -->
@@ -205,7 +206,7 @@
 
                     <!-- Buttons to navigate or submit order -->
                     <button @click="navigateToProducts">Add items to cart</button>
-                    <button @click="validateAndSubmit">Place Order</button>
+                    <button @click="submitForm">Place Order</button>
 
                 </div>
             </div>
@@ -214,292 +215,203 @@
 
     <!-- Vue.js script -->
     <script type="text/javascript">
-
-        // Vue instance for the EduSync web application
-        let webstore = new Vue({
-            el: '#app',
-
-            // Data properties for storing application state
-            data: {
-                // Site name mounting the app
-                sitename: 'EduSync',
-                showProduct: true,
-                // Contains an array of lesson data
-                products: [],
-                // Array to store items in the cart
-                cart: [],
-                // Attribute to sort products by (default: title of Subject)
-                sortAttribute: "subject",
-                sortOrder: "asc",
-                // Order information (first name last name, address, email)
-                order: {
-                    firstName: '',
-                    lastName: '',
-                    address: '',
-                    email: '',
-                },
-
-                provinces: {
-                    AB: 'Alberta',
-                    SK: 'Saskachewan',
-                    BC: 'British Columbia',
-                    ON: 'Ontario'
-                },
-
-
-                // products: products,
-                searchQuery: '',
-                
-                // selectedSortOrder: 'lowToHigh'
+    let webstore = new Vue({
+        el: '#app',
+        data: {
+            sitename: 'EduSync',
+            showProduct: true,
+            products: [],
+            cart: [],
+            sortAttribute: "title",
+            sortOrder: "asc",
+            order: {
+                firstName: '',
+                lastName: '',
+                address: '',
+                email: '',
             },
+            provinces: {
+                AB: 'Alberta',
+                SK: 'Saskachewan',
+                BC: 'British Columbia',
+                ON: 'Ontario'
+            },
+            searchQuery: '',
+            validFullName: true,
+            validPhone: true,
+        },
+        created: function () {
+            fetch('http://localhost:4000/collection/lessons', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
+            .then(data => {
+                this.products = data;
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+        },
+        methods: {
+            addToCart(product) {
+                this.cart.push(product.id);
+            },
+            removeFromCart(product) {
+                const index = this.cart.indexOf(product.id);
+                if (index !== -1) {
+                    this.cart.splice(index, 1);
+                }
+            },
+            showCheckout() {
+                this.showProduct = !this.showProduct;
+            },
+            canAddToCart(product) {
+                return product.availableInventory > this.cartCount(product.id);
+            },
+            canRemoveFromCart(product) {
+                return product.availableInventory > this.cartCount(product.id);
+            },
+            cartCount(productId) {
+                return this.cart.filter(id => id === productId).length;
+            },
+            validateFullName() {
+                const regex = /^[A-Za-z\s]+$/;
+                this.validFullName = regex.test(this.order.firstName + ' ' + this.order.lastName);
+            },
+            validatePhone() {
+                const regex = /^[0-9]+$/;
+                this.validPhone = regex.test(this.order.phone);
+            },
+            getProductById(productId) {
+                return this.products.find(product => product.id === productId);
+            },
+            submitForm() {
+        // Check if all required fields are filled
+        if (!this.order.firstName || !this.order.lastName || !this.order.phone) {
+            alert('Please fill in all required fields.');
+            return; // Stop the function if any field is empty
+        }
 
-            created: function () {
-                fetch('http://localhost:4000/collection/lessons', {
-                    // for making site work http://localhost:3000/index.html, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    this.products = data; // Assign the fetched data to the products array
-                })
-                .catch(error => {
-                    console.error('There has been a problem with your fetch operation:', error);
+        // Proceed with the order submission if all fields are valid
+        if (this.validFullName && this.validPhone && this.cart.length > 0) {
+            alert('Order Submitted!');
+            this.postOrder(); // Implement the logic to submit the order
+            this.clearCart();
+            this.clearOrderInfo();
+        } else {
+            alert('Please fill in all required fields correctly and add items to the cart.');
+        }
+    },
+            postOrder() {
+                // Implementation of postOrder method
+                // This method should handle the logic for submitting the order to your backend
+                console.log("Order submitted:", this.order);
+            },
+            clearCart() {
+                this.cart = [];
+            },
+            clearOrderInfo() {
+                this.order.firstName = '';
+                this.order.lastName = '';
+                this.order.phone = '';
+            },
+            selectCategory(category) {
+                this.selectedSortOrder = 'default';
+                this.searchQuery = '';
+                switch (category) {
+                    case 'all':
+                        this.showProduct = true;
+                        break;
+                    case 'coreSubjects':
+                        this.showProduct = false;
+                        break;
+                    case 'extracurricularActivities':
+                        this.showProduct = false;
+                        break;
+                    default:
+                        break;
+                }
+            },
+            navigateToProducts() {
+                this.showProduct = true;
+                const productsSection = document.getElementById('products-section');
+                if (productsSection) {
+                    productsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            },
+        },
+        computed: {
+            cartItemCount: function () {
+                return this.cart.length || '';
+            },
+            coreSubjects() {
+                return this.sortedAndFilteredProducts.filter(product => {
+                    return product.description.toLowerCase().includes('core subject');
                 });
             },
-
-
-            // Methods for handling user interactions and form submission
-            methods: {
-                addToCart(product) {
-                    this.cart.push(product.id);
-                },
-
-                removeFromCart(product) {
-                    const index = this.cart.indexOf(product.id);
-                    if (index !== -1) {
-                        this.cart.splice(index, 1);
-                    }
-                },
-
-                showCheckout() {
-                    this.showProduct = this.showProduct ? false : true;
-                },
-
-                canAddToCart(product) {
-                    return product.availableInventory > this.cartCount(product.id);
-                },
-
-                canRemoveFromCart(product) {
-                    return product.availableInventory > this.cartCount(product.id);
-                },
-
-                cartCount(productId) {
-                    return this.cart.filter(id => id === productId).length;
-                },
-
-                removeFromCart(product) {
-                    const index = this.cart.indexOf(product.id);
-                    if (index !== -1) {
-                        this.cart.splice(index, 1);
-                    }
-                },
-
-                getProductById(productId) {
-                    return this.products.find(product => product.id === productId);
-                },
-
-                // submitForm() {
-                //     if (this.lessonOrder.errorMessage == "" && this.cart.length > 0) {
-                //         alert("Successfully placed order!");
-                //         document.getElementById('submitForm').innerHTML = "Thank you for purchasing! <br>"
-
-                //         //function to add the order to the database
-                //         addOrder(this.order.firstName, this.order.lastName, this.order.email,  this.cart);
-
-                //         //function to update the spaces of the lessons
-                //         updateorder(this.cart);
-
-                //         //clearing the fields
-                //         this.order.firstName = "";
-                //         this.order.lastName = "";
-                //         this.order.email = "";
-                //         this.cart.splice(0, this.cart.length);
-                //     }
-                //     else if (this.cart.length == 0) {
-                //         alert("No products in cart!")
-                //     }
-                //     else {
-                //         alert("Please enter the correct values.");
-                //     }
-
-                //     //Add Order function. The following function addes the order to the database
-                //     function addOrder(firstName, lastName, email, cartOrder) {
-                //         var final_cart = [];
-                //         var n = 0;
-
-                //         //making an array with unique orders incase same lessons are ordered
-                //         for (i = 0; i < cartOrder.length; i++) {
-                //             const uniqueOrder = { "id": cartOrder[i]._id, "spaces": 1 };
-                //             if (final_cart.length == 0) {
-                //                 final_cart.push(uniqueOrder);
-                //             }
-                //             else {
-                //                 for (a = 0; a < final_cart.length; a++) {
-                //                     if (final_cart[a].id == cartOrder[i]._id) {
-                //                         final_cart[a].spaces = final_cart[a].spaces + 1;
-                //                         break;
-                //                     }
-                //                     else {
-                //                         final_cart.push(uniqueOrder);
-                //                         break;
-                //                     }
-                //                 }
-                //             }
-                //         }
-
-                //         //final order object that is added into MongoDB
-                //         const newOrder = { "firstName": firstName, "lastName": lastName, "email": email, "order": final_cart };
-
-                //         //POST request to add the order to the database.
-                //         fetch("http://localhost:3000/collection/orders", {
-                //             method: 'POST',
-                //             headers: {
-                //                 "Content-Type": "application/json",
-                //                 "Access-Control-Allow-Origin": "*",
-                //                 "Access-Control-Allow-Credentials": true
-                //             },
-                //             body: JSON.stringify(newOrder),
-                //         }).then(response => response.text()).then(responseJSON => {
-                //             updateorder(cartOrder);
-                //         });
-                //     }
-
-
-                validateAndSubmit() {
-                    if (
-                        this.order.firstName &&
-                        this.order.lastName &&
-                        this.order.email
-                    ) {
-                        if (this.order.email.match(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)) {
-                            // All required fields are filled, and email is a valid Gmail address
-                            this.submitForm();
-                        } else {
-                            alert('Please enter a valid Gmail address.');
-                        }
-                    } else {
-                        alert('Please fill in all required fields.');
-                    }
-                },
-
-                selectCategory(category) {
-                    this.selectedSortOrder = 'default'; // Reset sorting order
-                    this.searchQuery = ''; // Reset search query
-
-                    switch (category) {
-                        case 'all':
-                            this.showProduct = true;
-                            break;
-                        case 'coreSubjects':
-                            this.showProduct = false;
-                            break;
-                        case 'extracurricularActivities':
-                            this.showProduct = false;
-                            break;
-                        // Add more cases for additional categories
-                        default:
-                            break;
-                    }
-                },
-
-                navigateToProducts() {
-                    // Reset the view to show the product page
-                    this.showProduct = true;
-
-                    const productsSection = document.getElementById('products-section');
-                    if (productsSection) {
-                        productsSection.scrollIntoView({ behavior: 'smooth' });
-                    }
-                },
-
+            extracurricularActivities() {
+                return this.sortedAndFilteredProducts.filter(product => {
+                    return product.description.toLowerCase().includes('extracurricular activity');
+                });
             },
+            validFullName: function() {
+                return this.validFullName;
+            },
+            validPhone: function() {
+                return this.validPhone;
+            },
+            validOrderInfo: function() {
+                return this.validFullName && this.validPhone && this.cart.length > 0;
+            },
+            uniqueCartItems() {
+                const uniqueProductIds = new Set(this.cart);
+                return Array.from(uniqueProductIds);
+            },
+            sortedAndFilteredProducts() {
+                let productsArray = [...this.products];
+                const query = this.searchQuery.toLowerCase();
+                productsArray = productsArray.filter(product => {
+                    return (
+                        product.title.toLowerCase().includes(query) ||
+                        product.description.toLowerCase().includes(query)
+                    );
+                });
 
-            // Computed properties for dynamic data calculations
-            computed: { // the Computed Property object
-                cartItemCount: function () { //the property name
-                    // its value is calculated when it is called
-                    return this.cart.length || '';
-                },
+                switch (this.sortAttribute) {
+                    case 'title':
+                        productsArray.sort((a, b) => a.title.localeCompare(b.title));
+                        break;
+                    case 'location':
+                        productsArray.sort((a, b) => a.location.localeCompare(b.location));
+                        break;
+                    case 'price':
+                        productsArray.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'availableInventory':
+                        productsArray.sort((a, b) => a.availableInventory - b.availableInventory);
+                        break;
+                    default:
+                        break;
+                }
 
-                coreSubjects() {
-                    return this.sortedAndFilteredProducts.filter(product => {
-                        return product.description.toLowerCase().includes('core subject');
-                    });
-                },
+                if (this.sortOrder === 'desc') {
+                    productsArray.reverse();
+                }
 
-                extracurricularActivities() {
-                    return this.sortedAndFilteredProducts.filter(product => {
-                        return product.description.toLowerCase().includes('extracurricular activity');
-                    });
-                },
+                return productsArray;
+            },
+        }
+    });
+</script>
 
-
-
-                uniqueCartItems() {
-                    // Create a set of unique product IDs in the cart
-                    const uniqueProductIds = new Set(this.cart);
-
-                    // Convert the set back to an array
-                    return Array.from(uniqueProductIds);
-                },
-
-                sortedAndFilteredProducts() {
-                    let productsArray = [...this.products];
-
-                    // Filter based on the searchQuery
-                    const query = this.searchQuery.toLowerCase();
-                    productsArray = productsArray.filter(product => {
-                        return (
-                            product.title.toLowerCase().includes(query) ||
-                            product.description.toLowerCase().includes(query)
-                        );
-                    });
-
-                    // Sort based on the selectedSortOrder
-                    switch (this.selectedSortOrder) {
-                        case 'lowToHigh':
-                            productsArray.sort((a, b) => a.price - b.price);
-                            break;
-                        case 'highToLow':
-                            productsArray.sort((a, b) => b.price - a.price);
-                            break;
-                        case 'location':
-                            productsArray.sort((a, b) => a.location.localeCompare(b.location));
-                            break;
-                        case 'spacesAvailability':
-                            productsArray.sort((a, b) => a.availableInventory - b.availableInventory);
-                            break;
-                        // Add more cases for additional sorting options
-                        default:
-                            break;
-                    }
-
-                    return productsArray;
-                },
-
-
-
-            }
-        });
-    </script>
 </body>
 
 </html>
